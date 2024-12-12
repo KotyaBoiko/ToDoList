@@ -1,24 +1,37 @@
-import React from 'react'
+import React from "react";
 
 type Props = {
-  addTask():void
-}
+  addTask(): void;
+  setCategory: React.Dispatch<React.SetStateAction<number>>;
+  activeCategory: number;
+};
 
-const categories: string[] = [
-  'All',
-  'In Progress',
-  'Complited',
-]
+const categories: string[] = ["All tasks", "In Progress", "Complited"];
 
-const Menu:React.FC<Props> = ({addTask}) => {
+const Menu: React.FC<Props> = ({ addTask, setCategory, activeCategory }) => {
   return (
-    <div className='flex gap-1'>
-    <button onClick={addTask} className='text-violet-600 border-none menu-item'>
-      + New task
-    </button>
-    {categories.map(category => <button className='menu-item'>{category}</button>)}
+    <div className="flex gap-1">
+      <button
+        onClick={addTask}
+        className="text-violet-600 border-none menu-item"
+      >
+        + New task
+      </button>
+      {categories.map((categoryName, i) => {
+        return (
+          <button
+            className={`menu-item ${
+              activeCategory == i ? "bg-white border-none drop-shadow-[0_1px_5px_rgba(0,0,0,0.20)]" : ""
+            }`}
+            key={i}
+            onClick={() => setCategory(i)}
+          >
+            {categoryName}
+          </button>
+        );
+      })}
     </div>
-  )
-}
+  );
+};
 
-export default Menu
+export default Menu;
