@@ -1,26 +1,24 @@
-import React, { useRef, useState } from "react";
+import { FC, useRef, useState } from "react";
 import Checkbox from "./UI/Checkbox";
 import RemoveButton from "./UI/RemoveButton";
 import { TaskType } from "./type/data";
 import EditIcon from "./UI/EditIcon";
 import CancelIcon from "./UI/CancelIcon";
 
+
 type Props = {
   task: TaskType;
   removeTask(id: number): void;
-  toggleCompleted(task: TaskType): void;
-  saveEditTitle(task: TaskType, title: string): void;
+  saveEditTask(task:TaskType, message:String):void,
 };
 
-const TaskItem: React.FC<Props> = ({
+const TaskItem: FC<Props> = ({
   task,
   removeTask,
-  toggleCompleted,
-  saveEditTitle,
+  saveEditTask,
 }) => {
   const [isEnableMode, setisEnableMode] = useState(false);
   const [newValue, setNewValue] = useState(task.title);
-
   const fieldToChengeTitle = useRef<HTMLInputElement>(null);
 
   const editTitle = (): void => {
@@ -32,26 +30,38 @@ const TaskItem: React.FC<Props> = ({
     setisEnableMode(false);
   };
 
-  const saveEdit = () => {
-    if (newValue != task.title) {
-      saveEditTitle(task, newValue);
-    }
-    setisEnableMode(false);
+    const saveEditTitle = (task: TaskType, title: string): void => {
+      if (newValue === task.title) return;
+
+      if (title == "") {
+        task.title = "Enter your task";
+      } else {
+        task.title = title;
+      }
+      saveEditTask(task, "Task changes");
+      setisEnableMode(false);
+    };
+
+  const toggleCompleted = (task: TaskType): void => {
+    task.isComplited = !task.isComplited;
+    const message = task.isComplited ? 'Task complited!' : "Task in progress"
+    saveEditTask(task, message);
   };
+
   const onInputKeyPress: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.key === "Enter") saveEdit();
+    if (e.key === "Enter") saveEditTitle(task, newValue);
     if (e.key === "Escape") cancelEdit();
   };
 
   return (
     <tr className={task.isComplited ? "bg-violet-50" : ""}>
       <td className="flex-auto">
-        <div
-          className="flex justify-center items-center"
+        <button
+          className="ml-auto px-2 cursor-pointer"
           onClick={() => toggleCompleted(task)}
         >
           <Checkbox active={task.isComplited} />
-        </div>
+        </button>
       </td>
 
       <td className="ml-2 whitespace-normal break-words">
@@ -68,7 +78,7 @@ const TaskItem: React.FC<Props> = ({
                 if (e.relatedTarget?.id === 'cencelEditText') {
                   cancelEdit()
                 } else {
-                  saveEdit()
+                  saveEditTitle(task, newValue)
 
                 }
               }}
