@@ -1,9 +1,11 @@
 import { FC, useRef, useState } from "react";
 import Checkbox from "./UI/Checkbox";
 import RemoveButton from "./UI/RemoveButton";
-import { TaskType } from "./type/data";
+import { TaskType } from "../type/data";
 import EditIcon from "./UI/EditIcon";
 import CancelIcon from "./UI/CancelIcon";
+import PriorityFlag from "./UI/PriorityFlag";
+import { priorities } from "../utils/constants/priorities";
 
 
 type Props = {
@@ -102,7 +104,9 @@ const TaskItem: FC<Props> = ({
         )}
       </td>
 
-      <td>0</td>
+      <td>
+          <PriorityFlag color={`${priorities[task.priority]}`}/>
+      </td>
 
       <td>
         {new Date().toLocaleDateString("en-US", {

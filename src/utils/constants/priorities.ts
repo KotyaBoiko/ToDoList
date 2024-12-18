@@ -1,0 +1,1 @@
+export const priorities = ["#32CD32", "#FFD700", "#FF8C00", "red"];

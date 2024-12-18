@@ -1,18 +1,18 @@
 import React from "react";
 
 type Props = {
-  addTask(): void;
+  setIsAdding: React.Dispatch<React.SetStateAction<boolean>>;
   setCategory: React.Dispatch<React.SetStateAction<number>>;
   activeCategory: number;
 };
 
 const categories: string[] = ["All tasks", "In Progress", "Complited"];
 
-const Menu: React.FC<Props> = ({ addTask, setCategory, activeCategory }) => {
+const Menu: React.FC<Props> = ({ setIsAdding, setCategory, activeCategory }) => {
   return (
     <div className="flex gap-1">
       <button
-        onClick={addTask}
+        onClick={() => setIsAdding(true)}
         className="text-violet-600 border-none menu-item"
       >
         + New task
