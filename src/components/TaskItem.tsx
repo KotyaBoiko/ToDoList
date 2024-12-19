@@ -1,7 +1,7 @@
 import { FC, useRef, useState } from "react";
 import Checkbox from "./UI/Checkbox";
 import RemoveButton from "./UI/RemoveButton";
-import { TaskType } from "../type/data";
+import { TaskType } from "../type/TaskType";
 import EditIcon from "./UI/EditIcon";
 import CancelIcon from "./UI/CancelIcon";
 import PriorityFlag from "./UI/PriorityFlag";
@@ -109,10 +109,7 @@ const TaskItem: FC<Props> = ({
       </td>
 
       <td>
-        {new Date().toLocaleDateString("en-US", {
-          month: "long",
-          day: "numeric",
-        })}
+        {new Date(task.date).toLocaleString("en-US", {month: "long", day: "numeric"})}
       </td>
 
       <td

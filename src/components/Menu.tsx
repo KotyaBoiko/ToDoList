@@ -1,12 +1,11 @@
 import React from "react";
+import { categories } from "../utils/constants/categories";
 
 type Props = {
   setIsAdding: React.Dispatch<React.SetStateAction<boolean>>;
   setCategory: React.Dispatch<React.SetStateAction<number>>;
   activeCategory: number;
 };
-
-const categories: string[] = ["All tasks", "In Progress", "Complited"];
 
 const Menu: React.FC<Props> = ({ setIsAdding, setCategory, activeCategory }) => {
   return (

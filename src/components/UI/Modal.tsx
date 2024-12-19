@@ -17,7 +17,7 @@ const Modal: FC<Props> = ({ visible, setVisible, children }) => {
       onClick={() => setVisible(false)}
     >
       <div
-        className="bg-slate-50 max-w-5xl z-20 relative m-auto mt-20 p-10 rounded-md"
+        className="bg-slate-50 max-w-5xl z-20 relative m-auto mt-12 p-10 rounded-md"
         onClick={(e) => e.stopPropagation()}
       >
         {children}

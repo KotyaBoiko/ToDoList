@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { TaskType } from "./type/data";
+import { TaskType } from "./type/TaskType";
 import Menu from "./components/Menu";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormAddTask from "./components/FormAddTask/FormAddTask";
 import TaskList from "./components/TaskList/TaskList";
-import Modal from "./components/Modal";
+import Modal from "./components/UI/Modal";
 
 function App() {
   const [tasks, setTasks] = useState<TaskType[]>([]);

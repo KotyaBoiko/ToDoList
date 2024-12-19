@@ -1,6 +1,6 @@
 import { FC } from "react"
 import TaskItem from "../TaskItem"
-import { TaskType } from "../../type/data"
+import { TaskType } from "../../type/TaskType"
 import SkeletonTaskList from "./SkeletonTaskList"
 
 type Props = {

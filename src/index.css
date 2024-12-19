@@ -39,3 +39,15 @@ td {
   border-t-2
   rounded-t-lg
 }
+
+.arrowContainer {
+  @apply border border-slate-300 p-3 rounded-2xl cursor-pointer  
+}
+
+.arrowContainer:hover {
+  @apply bg-violet-500 delay-75;
+  .arrow {
+    fill: white;
+    transition-delay: 75ms;
+  }
+}

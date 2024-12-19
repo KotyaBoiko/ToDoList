@@ -3,9 +3,9 @@ import { FaTrashAlt } from "react-icons/fa";
 
 const RemoveButton:FC = () => {
   return (
-    <button>
-      <FaTrashAlt />
-    </button>
+    <div className="flex justify-center">
+        <FaTrashAlt />
+      </div>
   );
 };
 

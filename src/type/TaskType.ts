@@ -2,6 +2,6 @@ export type TaskType = {
   title: string,
   isComplited: boolean,
   priority: number,
-  time: Date,
+  date: Date,
   id:number,
 }
