@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import { TaskType } from "../../type/TaskType";
 import PrioritiesList from "../PrioritiesList";
 import DatePicker from "../DateTimePicker/DatePicker";
+import { toast } from "react-toastify";
 
 type Props = {
   addTask(task: TaskType): void;
@@ -22,6 +23,10 @@ const FormAddTask: FC<Props> = ({ addTask, setIsAdding }) => {
   }
 
   const saveTask = (): void => {
+    if (taskTitle === "") {
+      toast.error("Please enter the task name");
+      return;
+    }
     const task: TaskType = {
       id: 0,
       title: taskTitle,
