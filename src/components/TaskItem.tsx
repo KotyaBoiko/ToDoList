@@ -1,26 +1,31 @@
-import { FC, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import Checkbox from "./UI/Checkbox";
-import RemoveButton from "./UI/RemoveButton";
+import RemoveButton from "./UI/Icons/RemoveIcon";
 import { TaskType } from "../type/TaskType";
-import EditIcon from "./UI/EditIcon";
-import CancelIcon from "./UI/CancelIcon";
-import PriorityFlag from "./UI/PriorityFlag";
+import EditIcon from "./UI/Icons/EditIcon";
+import CancelIcon from "./UI/Icons/CancelIcon";
+import PriorityFlag from "./UI/Icons/PriorityFlagIcon";
 import { priorities } from "../utils/constants/priorities";
-
+import Modal from "./UI/Modal";
+import PrioritiesList from "./PrioritiesList";
+import DatePicker from "./DateTimePicker/DatePicker";
 
 type Props = {
   task: TaskType;
   removeTask(id: number): void;
-  saveEditTask(task:TaskType, message:String):void,
+  saveEditTask(task: TaskType, message: String): void;
 };
 
-const TaskItem: FC<Props> = ({
-  task,
-  removeTask,
-  saveEditTask,
-}) => {
+const TaskItem: FC<Props> = ({ task, removeTask, saveEditTask }) => {
   const [isEnableMode, setisEnableMode] = useState(false);
   const [newValue, setNewValue] = useState(task.title);
+
+  const [priority, setPriority] = useState(task.priority);
+  const [isPickPriority, setIsPickPriority] = useState(false);
+
+  const [date, setDate] = useState(task.date);
+  const [isPickDate, setIsPickDate] = useState(false);
+
   const fieldToChengeTitle = useRef<HTMLInputElement>(null);
 
   const editTitle = (): void => {
@@ -32,21 +37,21 @@ const TaskItem: FC<Props> = ({
     setisEnableMode(false);
   };
 
-    const saveEditTitle = (task: TaskType, title: string): void => {
-      if (newValue === task.title) return;
+  const saveEditTitle = (task: TaskType, title: string): void => {
+    if (newValue === task.title) return;
 
-      if (title == "") {
-        task.title = "Enter your task";
-      } else {
-        task.title = title;
-      }
-      saveEditTask(task, "Task changes");
-      setisEnableMode(false);
-    };
+    if (title == "") {
+      task.title = "Enter your task";
+    } else {
+      task.title = title;
+    }
+    saveEditTask(task, "Task changes");
+    setisEnableMode(false);
+  };
 
   const toggleCompleted = (task: TaskType): void => {
     task.isComplited = !task.isComplited;
-    const message = task.isComplited ? 'Task complited!' : "Task in progress"
+    const message = task.isComplited ? "Task complited!" : "Task in progress";
     saveEditTask(task, message);
   };
 
@@ -54,6 +59,22 @@ const TaskItem: FC<Props> = ({
     if (e.key === "Enter") saveEditTitle(task, newValue);
     if (e.key === "Escape") cancelEdit();
   };
+
+  useEffect(() => {
+    setIsPickPriority(false);
+    if (priority !== task.priority) {
+      task.priority = priority;
+      saveEditTask(task, "Priority changes");
+    }
+  }, [priority]);
+
+  useEffect(() => {
+    setIsPickDate(false);
+    if (date !== task.date) {
+      task.date = date;
+      saveEditTask(task, "Date changes");
+    }
+  }, [date]);
 
   return (
     <tr className={task.isComplited ? "bg-violet-50" : ""}>
@@ -77,18 +98,14 @@ const TaskItem: FC<Props> = ({
               onChange={(e) => setNewValue(e.target.value)}
               onKeyDown={onInputKeyPress}
               onBlur={(e) => {
-                if (e.relatedTarget?.id === 'cencelEditText') {
-                  cancelEdit()
+                if (e.relatedTarget?.id === "cencelEditText") {
+                  cancelEdit();
                 } else {
-                  saveEditTitle(task, newValue)
-
+                  saveEditTitle(task, newValue);
                 }
               }}
             />
-            <button
-              className="ml-auto px-2 cursor-pointer"
-              id="cencelEditText"
-            >
+            <button className="ml-auto px-2 cursor-pointer" id="cencelEditText">
               <CancelIcon />
             </button>
           </div>
@@ -104,13 +121,25 @@ const TaskItem: FC<Props> = ({
         )}
       </td>
 
-      <td>
-          <PriorityFlag color={`${priorities[task.priority]}`}/>
+      <td onClick={() => setIsPickPriority(true)} className="cursor-pointer">
+        <PriorityFlag color={`${priorities[priority]}`} />
       </td>
-
-      <td>
-        {new Date(task.date).toLocaleString("en-US", {month: "long", day: "numeric"})}
+        {isPickPriority && (
+          <Modal visible={isPickPriority} setVisible={setIsPickPriority}>
+            <PrioritiesList priority={priority} setPriority={setPriority} />
+          </Modal>
+        )}
+      <td onClick={() => setIsPickDate(true)} className="cursor-pointer">
+        {new Date(date).toLocaleString("en-US", {
+          month: "long",
+          day: "numeric",
+        })}
       </td>
+        {isPickDate && (
+          <Modal visible={isPickDate} setVisible={setIsPickDate}>
+            <DatePicker date={new Date(date)} setDate={setDate} />
+          </Modal>
+        )}
 
       <td
         onClick={() => removeTask(task.id)}

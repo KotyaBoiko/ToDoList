@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { days } from "../../utils/constants/days";
 import { getWeek } from "../../utils/getWeak";
-import Arrow from "../UI/Arrow";
+import Arrow from "../UI/Icons/ArrowsIcons";
 import { compareDate } from "../../utils/compareDate";
 
 type Props = {
@@ -13,7 +13,6 @@ const today = new Date();
 
 const DatePicker: FC<Props> = ({ date, setDate }) => {
   const [week, setWeek] = useState(0);
-
   const changeDate = (weekDate:Date) => {
     if (compareDate(weekDate, today) >= 0)
     setDate(weekDate);
@@ -38,7 +37,7 @@ const DatePicker: FC<Props> = ({ date, setDate }) => {
     <div className="flex justify-center items-center gap-5">
       <div
         className="arrowContainer"
-        onClick={() => compareDate(electWeek[0], date) >= 0 && setWeek(week - 1)}
+        onClick={() => compareDate(electWeek[0], today) >= 0 && setWeek(week - 1)}
       >
         <Arrow direction="left" />
       </div>

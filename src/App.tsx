@@ -92,13 +92,13 @@ function App() {
   };
 
   return (
-    <div className="p-16 overflow-hidden">
+    <div className="overflow-hidden">
       <Modal
         visible={isAdding}
         setVisible={setIsAdding}
         children={<FormAddTask addTask={addTask} setIsAdding={setIsAdding}/>}
       />
-      <div className="bg-purple-400 rounded-lg -rotate-4.2">
+      <div className="bg-purple-400 rounded-lg -rotate-4.2 m-16">
         <div className="bg-purple-300 rounded-lg rotate-2.2">
           <div className="bg-purple-200 p-2 rounded-lg rotate-2">
             <div className="px-3 py-4 bg-gray-100 rounded-lg">

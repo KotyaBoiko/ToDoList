@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { priorities } from '../utils/constants/priorities';
-import PriorityFlag from './UI/PriorityFlag';
+import PriorityFlag from './UI/Icons/PriorityFlagIcon';
 
 type Props = {
   priority: number,

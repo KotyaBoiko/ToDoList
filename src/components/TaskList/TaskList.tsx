@@ -12,7 +12,7 @@ type Props = {
 
 const TaskList:FC<Props> = ({tasks, isLoading, removeTask, saveEditTask}) => {
   return (
-    <div className="container__task-list rounded-lg border p-5 bg-white z-10 relative">
+    <div className="container__task-list rounded-lg border p-5 bg-white relative">
     {!tasks.length && !isLoading ? (
       <p className="text-7xl ml-auto text-center mt-20">
         No task found
