@@ -6,8 +6,8 @@ const SkeletonTaskList:FC = () => {
 
   return (
     <tbody>
-      {[...new Array(6)].map(() => {
-        return <tr>
+      {[...new Array(6)].map((_,index) => {
+        return <tr key={index}>
           <td>
             <Skeleton />
           </td>

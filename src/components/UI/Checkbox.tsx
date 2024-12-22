@@ -7,7 +7,7 @@ type Props = {
 
 const Checkbox:FC<Props> = ({active}) => {
   return (
-    <button 
+    <div 
     className={`
     flex items-center justify-center 
     size-6 rounded-lg border-2 border-gray-400
@@ -15,7 +15,7 @@ const Checkbox:FC<Props> = ({active}) => {
     `}
     >
       <FaCheck color="white"/>
-    </button>
+    </div>
   )
 }
 

@@ -121,7 +121,7 @@ const TaskItem: FC<Props> = ({ task, removeTask, saveEditTask }) => {
         )}
       </td>
 
-      <td onClick={() => setIsPickPriority(true)} className="cursor-pointer">
+      <td onDoubleClick={() => setIsPickPriority(true)} className="cursor-pointer">
         <PriorityFlag color={`${priorities[priority]}`} />
       </td>
         {isPickPriority && (
@@ -129,7 +129,7 @@ const TaskItem: FC<Props> = ({ task, removeTask, saveEditTask }) => {
             <PrioritiesList priority={priority} setPriority={setPriority} />
           </Modal>
         )}
-      <td onClick={() => setIsPickDate(true)} className="cursor-pointer">
+      <td onDoubleClick={() => setIsPickDate(true)} className="cursor-pointer">
         {new Date(date).toLocaleString("en-US", {
           month: "long",
           day: "numeric",

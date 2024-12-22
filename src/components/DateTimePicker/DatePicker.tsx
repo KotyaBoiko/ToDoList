@@ -37,7 +37,7 @@ const DatePicker: FC<Props> = ({ date, setDate }) => {
     <div className="flex justify-center items-center gap-5">
       <div
         className="arrowContainer"
-        onClick={() => compareDate(electWeek[0], today) >= 0 && setWeek(week - 1)}
+        onClick={() => compareDate(electWeek[0], today) > 0 && setWeek(week - 1)}
       >
         <Arrow direction="left" />
       </div>
@@ -45,7 +45,7 @@ const DatePicker: FC<Props> = ({ date, setDate }) => {
         <div className="flex text-center box-content">
           {electWeek?.map((weekDate, index) => {
             return (
-              <div className="w-full text-xl">
+              <div className="w-full text-xl" key={index*Number(weekDate)}>
                 <div className="bg-slate-200 border-b border-slate-300 py-3 text-slate-600">
                   {days[index]}
                 </div>

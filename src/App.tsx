@@ -10,17 +10,18 @@ import Modal from "./components/UI/Modal";
 
 function App() {
   const [tasks, setTasks] = useState<TaskType[]>([]);
-  const [queryParams, setQueryParams] = useState("");
+  const [queryParams, setQueryParams] = useState("?sortBy=date&");
   const [category, setCategory] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
+  const [sortQuery, setSortQuery] = useState({ sortBy: "date", order: "asc" });
 
   const getTasks = (): void => {
     setIsLoading(true);
     fetch(`https://6758801b60576a194d10c782.mockapi.io/tasks${queryParams}`)
       .then((res) => res.json())
       .then((data) => (Array.isArray(data) ? setTasks(data) : setTasks([])))
-      .catch((error: Error) => console.log(error.message))
+      .catch(() => toast("Error"))
       .finally(() => setIsLoading(false));
   };
 
@@ -29,7 +30,7 @@ function App() {
   }, [queryParams]);
 
   useEffect(() => {
-    let query = "?sortBy=id&order=desc&";
+    let query = `?sortBy=${sortQuery.sortBy}&order=${sortQuery.order}&`;
     switch (category) {
       case 1:
         query += "isComplited=false&";
@@ -41,7 +42,19 @@ function App() {
         break;
     }
     setQueryParams(query);
-  }, [category]);
+  }, [category, sortQuery]);
+
+  const changeSort = (sortBy: string): void => {
+    if(sortBy === sortQuery.sortBy) {
+      if(sortQuery.order === "asc") {
+        setSortQuery({ sortBy, order: "desc" });
+      } else {
+        setSortQuery({ sortBy, order: "asc" });
+      }
+    } else {
+      setSortQuery({ sortBy, order: "asc"});
+    }
+  }
 
   const addTask = (task:TaskType): void => {
     toast.promise(
@@ -114,6 +127,7 @@ function App() {
                 isLoading={isLoading}
                 removeTask={removeTask}
                 saveEditTask={saveEditTask}
+                changeSort={changeSort}
               />
             </div>
           </div>
