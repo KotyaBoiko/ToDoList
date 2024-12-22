@@ -12,9 +12,10 @@ function App() {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [queryParams, setQueryParams] = useState("?sortBy=date&");
   const [category, setCategory] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
   const [sortQuery, setSortQuery] = useState({ sortBy: "date", order: "asc" });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingChange, setIsLoadingChange] = useState(false);
 
   const getTasks = (): void => {
     setIsLoading(true);
@@ -45,18 +46,21 @@ function App() {
   }, [category, sortQuery]);
 
   const changeSort = (sortBy: string): void => {
-    if(sortBy === sortQuery.sortBy) {
-      if(sortQuery.order === "asc") {
+    if (isLoading) return;
+    if (sortBy === sortQuery.sortBy) {
+      if (sortQuery.order === "asc") {
         setSortQuery({ sortBy, order: "desc" });
       } else {
         setSortQuery({ sortBy, order: "asc" });
       }
     } else {
-      setSortQuery({ sortBy, order: "asc"});
+      setSortQuery({ sortBy, order: "asc" });
     }
-  }
+  };
 
-  const addTask = (task:TaskType): void => {
+  const addTask = (task: TaskType): void => {
+    if (isLoading) return;
+    setIsLoading(true);
     toast.promise(
       fetch(`https://6758801b60576a194d10c782.mockapi.io/tasks/`, {
         method: "POST",
@@ -64,8 +68,9 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(task),
-      }).then(() => getTasks())
-      .then(() => setIsAdding(false)),
+      })
+        .then(() => getTasks())
+        .then(() => setIsAdding(false)),
       {
         pending: "Loading...",
         success: "Task added",
@@ -75,10 +80,14 @@ function App() {
   };
 
   const removeTask = (id: number): void => {
+    if (isLoadingChange) return;
+    setIsLoadingChange(true);
     toast.promise(
       fetch(`https://6758801b60576a194d10c782.mockapi.io/tasks/${id}`, {
         method: "DELETE",
-      }).then(() => setTasks(tasks.filter((t) => t.id !== id))),
+      })
+        .then(() => setTasks(tasks.filter((t) => t.id !== id)))
+        .finally(() => setIsLoadingChange(false)),
       {
         pending: "Loading...",
         success: "Task remove",
@@ -88,6 +97,8 @@ function App() {
   };
 
   const saveEditTask = (task: TaskType, message: string): void => {
+    if (isLoadingChange) return;
+    setIsLoadingChange(true);
     toast.promise(
       fetch(`https://6758801b60576a194d10c782.mockapi.io/tasks/${task.id}`, {
         method: "PUT",
@@ -95,7 +106,9 @@ function App() {
         headers: {
           "Content-Type": "application/json",
         },
-      }).then(() => setTasks(tasks.map((t) => (t.id == task.id ? task : t)))),
+      })
+        .then(() => setTasks(tasks.map((t) => (t.id == task.id ? task : t))))
+        .finally(() => setIsLoadingChange(false)),
       {
         pending: "Loading...",
         success: message,
@@ -109,7 +122,7 @@ function App() {
       <Modal
         visible={isAdding}
         setVisible={setIsAdding}
-        children={<FormAddTask addTask={addTask} setIsAdding={setIsAdding}/>}
+        children={<FormAddTask addTask={addTask} setIsAdding={setIsAdding} />}
       />
       <div className="bg-purple-400 rounded-lg -rotate-4.2 m-16">
         <div className="bg-purple-300 rounded-lg rotate-2.2">
