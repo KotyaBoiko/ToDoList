@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import "./App.css";
-import { TaskType } from "./type/TaskType";
+import { TaskType, TypeSaveTaskProps } from "./type/TaskType";
 import Menu from "./components/Menu";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormAddTask from "./components/FormAddTask/FormAddTask";
 import TaskList from "./components/TaskList/TaskList";
 import Modal from "./components/UI/Modal";
+import useFetching from "./hooks/useFetching";
+import TaskService from "./services/TaskService";
 
 function App() {
   const [tasks, setTasks] = useState<TaskType[]>([]);
@@ -14,20 +15,61 @@ function App() {
   const [category, setCategory] = useState(0);
   const [isAdding, setIsAdding] = useState(false);
   const [sortQuery, setSortQuery] = useState({ sortBy: "date", order: "asc" });
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingChange, setIsLoadingChange] = useState(false);
 
-  const getTasks = (): void => {
-    setIsLoading(true);
-    fetch(`https://6758801b60576a194d10c782.mockapi.io/tasks${queryParams}`)
-      .then((res) => res.json())
-      .then((data) => (Array.isArray(data) ? setTasks(data) : setTasks([])))
-      .catch(() => toast("Error"))
-      .finally(() => setIsLoading(false));
-  };
+  const [getTasks, isLoading] = useFetching<string>(async (queryParams) => {
+    const data = await TaskService.getTasks(queryParams);
+    setTasks(data);
+  }, true);
+
+  const [addTask, isLoadingAdd] = useFetching<TaskType>(async (task) => {
+    if (isLoadingAdd) return;
+    setIsAdding(true);
+    toast.promise(
+      async () => {
+        await TaskService.addTask(task);
+        await getTasks(queryParams);
+        setIsAdding(false);
+      },
+      {
+        pending: "Loading...",
+        success: "Task added",
+        error: "Error",
+      }
+    );
+  });
+
+  const [deleteTask, isLoadingDel] = useFetching<number>(async (id) => {
+    if (isLoadingDel) return;
+    toast.promise(
+      async () => {
+        await TaskService.deleteTask(id);
+        await setTasks((prev) => prev.filter((t) => t.id !== id));
+      },
+      {
+        pending: "Loading...",
+        success: "Task remove",
+        error: "Error",
+      }
+    );
+  });
+
+  const [saveEditTask, isLoadingSave] = useFetching<TypeSaveTaskProps>(async ({ task, message }) => {
+    if (isLoadingSave) return;
+    toast.promise(
+      async () => {
+        await TaskService.saveEditTask(task);
+        await setTasks(tasks.map((t) => (t.id == task.id ? task : t)));
+      },
+      {
+        pending: "Loading...",
+        success: message,
+        error: "Error",
+      }
+    );
+  });
 
   useEffect(() => {
-    getTasks();
+    getTasks(queryParams);
   }, [queryParams]);
 
   useEffect(() => {
@@ -58,65 +100,6 @@ function App() {
     }
   };
 
-  const addTask = (task: TaskType): void => {
-    if (isLoading) return;
-    setIsLoading(true);
-    toast.promise(
-      fetch(`https://6758801b60576a194d10c782.mockapi.io/tasks/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(task),
-      })
-        .then(() => getTasks())
-        .then(() => setIsAdding(false)),
-      {
-        pending: "Loading...",
-        success: "Task added",
-        error: "Error",
-      }
-    );
-  };
-
-  const removeTask = (id: number): void => {
-    if (isLoadingChange) return;
-    setIsLoadingChange(true);
-    toast.promise(
-      fetch(`https://6758801b60576a194d10c782.mockapi.io/tasks/${id}`, {
-        method: "DELETE",
-      })
-        .then(() => setTasks(tasks.filter((t) => t.id !== id)))
-        .finally(() => setIsLoadingChange(false)),
-      {
-        pending: "Loading...",
-        success: "Task remove",
-        error: "Error",
-      }
-    );
-  };
-
-  const saveEditTask = (task: TaskType, message: string): void => {
-    if (isLoadingChange) return;
-    setIsLoadingChange(true);
-    toast.promise(
-      fetch(`https://6758801b60576a194d10c782.mockapi.io/tasks/${task.id}`, {
-        method: "PUT",
-        body: JSON.stringify(task),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then(() => setTasks(tasks.map((t) => (t.id == task.id ? task : t))))
-        .finally(() => setIsLoadingChange(false)),
-      {
-        pending: "Loading...",
-        success: message,
-        error: "Error",
-      }
-    );
-  };
-
   return (
     <div className="overflow-hidden">
       <Modal
@@ -138,7 +121,7 @@ function App() {
               <TaskList
                 tasks={tasks}
                 isLoading={isLoading}
-                removeTask={removeTask}
+                deleteTask={deleteTask}
                 saveEditTask={saveEditTask}
                 changeSort={changeSort}
               />

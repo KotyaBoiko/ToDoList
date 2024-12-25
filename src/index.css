@@ -7,7 +7,6 @@ body {
   bg-fuchsia-100
   font-semibold 
   text-lg
-
 }
 
 .container__task-list {
@@ -15,7 +14,7 @@ body {
 }
 
 .task-list {
-  @apply w-full border-spacing-0 border-separate overflow-hidden table-auto break-normal 
+  @apply w-full border-spacing-0 border-separate overflow-hidden table-auto 
 }
 
 td {
@@ -29,6 +28,10 @@ td {
 
 .task-item__edit:focus {
   outline: none;
+}
+
+.task-item__title {
+  overflow-wrap: anywhere;
 }
 
 .menu-item {
@@ -50,4 +53,8 @@ td {
     fill: white;
     transition-delay: 75ms;
   }
+}
+
+.td_priority:hover svg {
+    @apply scale-110;
 }

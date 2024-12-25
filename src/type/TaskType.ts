@@ -5,3 +5,8 @@ export type TaskType = {
   date: Date,
   id:number,
 }
+
+export type TypeSaveTaskProps = {
+  task: TaskType,
+  message: string,
+}

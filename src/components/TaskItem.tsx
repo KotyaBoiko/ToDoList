@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from "react";
 import Checkbox from "./UI/Checkbox";
 import RemoveButton from "./UI/Icons/RemoveIcon";
-import { TaskType } from "../type/TaskType";
+import { TaskType, TypeSaveTaskProps } from "../type/TaskType";
 import EditIcon from "./UI/Icons/EditIcon";
 import CancelIcon from "./UI/Icons/CancelIcon";
 import PriorityFlag from "./UI/Icons/PriorityFlagIcon";
@@ -12,11 +12,11 @@ import DatePicker from "./DateTimePicker/DatePicker";
 
 type Props = {
   task: TaskType;
-  removeTask(id: number): void;
-  saveEditTask(task: TaskType, message: String): void;
+  deleteTask(id: number): void;
+  saveEditTask({task, message}:TypeSaveTaskProps): void;
 };
 
-const TaskItem: FC<Props> = ({ task, removeTask, saveEditTask }) => {
+const TaskItem: FC<Props> = ({ task, deleteTask, saveEditTask }) => {
   const [isEnableMode, setisEnableMode] = useState(false);
   const [newValue, setNewValue] = useState(task.title);
 
@@ -45,14 +45,14 @@ const TaskItem: FC<Props> = ({ task, removeTask, saveEditTask }) => {
     } else {
       task.title = title;
     }
-    saveEditTask(task, "Task changes");
+    saveEditTask({task, message:"Task changes"});
     setisEnableMode(false);
   };
 
   const toggleCompleted = (task: TaskType): void => {
-    task.isComplited = !task.isComplited;
+    const newTask = { ...task, isComplited: !task.isComplited };
     const message = task.isComplited ? "Task complited!" : "Task in progress";
-    saveEditTask(task, message);
+    saveEditTask({task:newTask, message});
   };
 
   const onInputKeyPress: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -64,7 +64,7 @@ const TaskItem: FC<Props> = ({ task, removeTask, saveEditTask }) => {
     setIsPickPriority(false);
     if (priority !== task.priority) {
       task.priority = priority;
-      saveEditTask(task, "Priority changes");
+      saveEditTask({task, message:"Priority changes"});
     }
   }, [priority]);
 
@@ -72,7 +72,7 @@ const TaskItem: FC<Props> = ({ task, removeTask, saveEditTask }) => {
     setIsPickDate(false);
     if (date !== task.date) {
       task.date = date;
-      saveEditTask(task, "Date changes");
+      saveEditTask({task, message:"Date changes"});
     }
   }, [date]);
 
@@ -87,7 +87,7 @@ const TaskItem: FC<Props> = ({ task, removeTask, saveEditTask }) => {
         </button>
       </td>
 
-      <td className="ml-2 whitespace-normal break-words">
+      <td className="ml-2 task-item__title">
         {isEnableMode ? (
           <div className="flex justify-center items-center">
             <input
@@ -111,7 +111,7 @@ const TaskItem: FC<Props> = ({ task, removeTask, saveEditTask }) => {
           </div>
         ) : (
           <div className="flex justify-center items-center">
-            <span className="w-full whitespace-normal break-words">
+            <span className="w-full">
               {task.title}
             </span>
             <div className="ml-auto px-2 cursor-pointer" onClick={editTitle}>
@@ -121,19 +121,23 @@ const TaskItem: FC<Props> = ({ task, removeTask, saveEditTask }) => {
         )}
       </td>
 
-      <td onDoubleClick={() => setIsPickPriority(true)} className="cursor-pointer">
-        <PriorityFlag color={`${priorities[priority]}`} />
+      <td onDoubleClick={() => setIsPickPriority(true)} className="">
+        <div className="cursor-pointer td_priority">
+          <PriorityFlag color={`${priorities[priority]}`} />
+        </div>
       </td>
         {isPickPriority && (
           <Modal visible={isPickPriority} setVisible={setIsPickPriority}>
             <PrioritiesList priority={priority} setPriority={setPriority} />
           </Modal>
         )}
-      <td onDoubleClick={() => setIsPickDate(true)} className="cursor-pointer">
-        {new Date(date).toLocaleString("en-US", {
-          month: "long",
-          day: "numeric",
-        })}
+      <td onDoubleClick={() => setIsPickDate(true)}>
+        <span className="hover:text-violet-600 cursor-pointer">
+          {new Date(date).toLocaleString("en-US", {
+            month: "long",
+            day: "numeric",
+          })}
+        </span>
       </td>
         {isPickDate && (
           <Modal visible={isPickDate} setVisible={setIsPickDate}>
@@ -142,7 +146,7 @@ const TaskItem: FC<Props> = ({ task, removeTask, saveEditTask }) => {
         )}
 
       <td
-        onClick={() => removeTask(task.id)}
+        onClick={() => deleteTask(task.id)}
         className="hover:text-rose-700 transition delay-75 cursor-pointer"
       >
         <RemoveButton />
