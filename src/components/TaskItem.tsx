@@ -121,7 +121,7 @@ const TaskItem: FC<Props> = ({ task, deleteTask, saveEditTask }) => {
         )}
       </td>
 
-      <td onDoubleClick={() => setIsPickPriority(true)} className="">
+      <td onClick={() => setIsPickPriority(true)} className="">
         <div className="cursor-pointer td_priority">
           <PriorityFlag color={`${priorities[priority]}`} />
         </div>
@@ -131,7 +131,7 @@ const TaskItem: FC<Props> = ({ task, deleteTask, saveEditTask }) => {
             <PrioritiesList priority={priority} setPriority={setPriority} />
           </Modal>
         )}
-      <td onDoubleClick={() => setIsPickDate(true)}>
+      <td onClick={() => setIsPickDate(true)}>
         <span className="hover:text-violet-600 cursor-pointer">
           {new Date(date).toLocaleString("en-US", {
             month: "long",
