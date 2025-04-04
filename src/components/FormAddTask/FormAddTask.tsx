@@ -3,6 +3,7 @@ import { TaskType } from "../../type/TaskType";
 import PrioritiesList from "../PrioritiesList";
 import DatePicker from "../DateTimePicker/DatePicker";
 import { toast } from "react-toastify";
+import SimpleInput from "../UI/SimpleInput";
 
 type Props = {
   addTask(task: TaskType): void;
@@ -49,12 +50,11 @@ const FormAddTask: FC<Props> = ({ addTask, setIsAdding }) => {
         <div className="flex flex-col gap-5">
           <div className="space-y-2">
             <h1 className="text-2xl mb-2">Task name</h1>
-            <input
+            <SimpleInput
               type="text"
               placeholder="Your task"
               value={taskTitle}
               onChange={(e) => setTaskTitle(e.target.value)}
-              className="w-full p-2 border-2 rounded-md focus:outline-violet-600"
             />
           </div>
           <div className="space-y-2">

@@ -4,8 +4,8 @@ const TASK_URL = "https://6758801b60576a194d10c782.mockapi.io/tasks";
 
 export default class TaskService {
   static getTasks = async (queryParams: string): Promise<TaskType[]> => {
-    const respons = await fetch(TASK_URL + queryParams);
-    const data: TaskType[] = await respons.json();
+    const response = await fetch(TASK_URL + queryParams);
+    const data: TaskType[] = await response.json();
     return Array.isArray(data) ? data : [];
   };
 
